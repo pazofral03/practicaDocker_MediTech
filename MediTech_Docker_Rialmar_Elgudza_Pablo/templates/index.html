@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center py-5 mt-4">
+    <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0">
+        <h1 class="display-4 fw-bold text-primary mb-3">
+            Tu Salud, <br> Nuestra Prioridad.
+        </h1>
+        <p class="lead text-muted mb-4">
+            Bienvenido a <strong>MediTech</strong>. La plataforma integral para la gestión de citas, 
+            historiales médicos y comunicación directa entre doctores y pacientes.
+        </p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <button class="btn btn-primary btn-lg px-4 me-md-2" disabled>
+                Iniciar Sesión
+            </button>
+            <button class="btn btn-outline-secondary btn-lg px-4" disabled>
+                Más información
+            </button>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <img src="{{ url_for('static', filename='images/doctor-portada.jpg') }}" 
+             alt="Doctor MediTech" 
+             class="img-fluid rounded-3 shadow-lg">
+    </div>
+</div>
+
+<div class="row mt-5 py-5 border-top">
+    <div class="col-md-4 text-center mb-4">
+        <div class="h1 text-primary">📅</div>
+        <h5 class="fw-bold">Citas Rápidas</h5>
+        <p class="text-muted">Agenda tu consulta en segundos, sin esperas telefónicas.</p>
+    </div>
+    <div class="col-md-4 text-center mb-4">
+        <div class="h1 text-primary">🛡️</div>
+        <h5 class="fw-bold">Datos Seguros</h5>
+        <p class="text-muted">Tu historial médico protegido con máxima seguridad.</p>
+    </div>
+    <div class="col-md-4 text-center mb-4">
+        <div class="h1 text-primary">💊</div>
+        <h5 class="fw-bold">Gestión de Recetas</h5>
+        <p class="text-muted">Accede a tus tratamientos directamente desde la plataforma.</p>
+    </div>
+</div>
+{% endblock %}
