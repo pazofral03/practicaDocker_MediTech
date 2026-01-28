@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center py-5 mt-4">
+    <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0">
+        <h1 class="display-4 fw-bold text-primary mb-3">
+            Tu Salud, <br> Nuestra Prioridad.
+        </h1>
+        <p class="lead text-muted mb-4">
+            Bienvenido a <strong>MediTech</strong>. La plataforma integral para la gestión de citas,
+            historiales médicos y comunicación directa entre doctores y pacientes.
+        </p>
+
+    </div>
+
+    <div class="col-lg-6">
+        <img src="{{ url_for('static', filename='images/doctor-portada.jpg') }}" alt="Doctor MediTech"
+            class="img-fluid rounded-3 shadow-lg">
+    </div>
+</div>
+
+
+{% endblock %}

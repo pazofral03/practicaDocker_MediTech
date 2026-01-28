@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center mt-4">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg border-0 rounded-lg">
+            <div class="card-header bg-success text-white text-center py-4">
+                <h3 class="mb-0 fw-bold">📝 Registro de Usuario</h3>
+                <p class="mb-0 text-white-50">Crea tu cuenta en MediTech</p>
+            </div>
+            <div class="card-body p-5">
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <form method="POST">
+                    <!-- Datos Generales -->
+                    <h6 class="text-uppercase text-muted fw-bold mb-3">Datos de Cuenta</h6>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre Completo</label>
+                        <input type="text" name="nombre_completo" class="form-control" required
+                            placeholder="Ej: Juan Pérez">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" required placeholder="nombre@ejemplo.com">
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Contraseña</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Confirmar Contraseña</label>
+                            <input type="password" name="confirm_password" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Selecciona tu Rol</label>
+                        <select name="rol" class="form-select" id="rolSelect" onchange="toggleFields()" required>
+                            <option value="" selected disabled>Elige una opción...</option>
+                            <option value="paciente">Paciente</option>
+                            <option value="medico">Médico</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                        <div class="form-text">Esto determinará tus permisos en la plataforma.</div>
+                    </div>
+
+                    <!-- Campos Específicos -->
+                    <div id="medicoFields" class="d-none border-top pt-3 mt-3 bg-light p-3 rounded">
+                        <h6 class="text-uppercase text-info fw-bold mb-3">👨‍⚕️ Datos Profesionales</h6>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Número de Colegiado</label>
+                                <input type="text" name="num_colegiado" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Especialidad</label>
+                                <input type="text" name="especialidad" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Disponibilidad Inicial</label>
+                            <input type="text" name="disponibilidad" class="form-control"
+                                placeholder="Ej: Lunes a Viernes 8:00 - 15:00">
+                        </div>
+                    </div>
+
+                    <div id="pacienteFields" class="d-none border-top pt-3 mt-3 bg-light p-3 rounded">
+                        <h6 class="text-uppercase text-secondary fw-bold mb-3">😷 Datos Personales</h6>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">NSS (Seguridad Social)</label>
+                                <input type="text" name="nss" class="form-control">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Teléfono</label>
+                                <input type="text" name="telefono" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Dirección</label>
+                            <input type="text" name="direccion" class="form-control" placeholder="Dirección completa">
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success btn-lg">Registrarse</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center py-3 bg-white">
+                <div class="small">¿Ya tienes cuenta? <a href="{{ url_for('auth.login') }}" class="fw-bold">Inicia
+                        Sesión aquí</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleFields() {
+        const rol = document.getElementById('rolSelect').value;
+        const medicoFields = document.getElementById('medicoFields');
+        const pacienteFields = document.getElementById('pacienteFields');
+
+        medicoFields.classList.add('d-none');
+        pacienteFields.classList.add('d-none');
+
+        // Quitamos 'required' de los inputs ocultos para evitar problemas de validación
+        enableInputs(medicoFields, false);
+        enableInputs(pacienteFields, false);
+
+        if (rol === 'medico') {
+            medicoFields.classList.remove('d-none');
+            enableInputs(medicoFields, true);
+        } else if (rol === 'paciente') {
+            pacienteFields.classList.remove('d-none');
+            enableInputs(pacienteFields, true);
+        }
+    }
+
+    function enableInputs(container, shouldEnable) {
+        const inputs = container.querySelectorAll('input');
+        inputs.forEach(input => {
+            if (shouldEnable) {
+                // Podríamos poner required si fuera estricto, pero mejor lo dejamos opcional o validamos en backend
+                // input.setAttribute('required', ''); 
+            } else {
+                input.removeAttribute('required');
+                input.value = ''; // Limpiar si se oculta
+            }
+        });
+    }
+
+    // Ejecutar al inicio
+    document.addEventListener("DOMContentLoaded", function () {
+        toggleFields();
+    });
+</script>
+{% endblock %}

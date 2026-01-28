@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">➕ Solicitar Nueva Cita</h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+
+                    {% if current_user.rol == 'admin' %}
+                    <div class="mb-3">
+                        <label class="form-label">Paciente</label>
+                        <select name="paciente_id" class="form-select" required>
+                            <option value="">Seleccionar Paciente...</option>
+                            {% for p in pacientes %}
+                            <option value="{{ p.id }}">{{ p.nombre_completo }} ({{ p.email }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Médico</label>
+                        <select name="medico_id" class="form-select" required>
+                            <option value="">Seleccionar Médico...</option>
+                            {% for m in medicos %}
+                            <option value="{{ m.id }}">{{ m.nombre_completo }} - {{ m.especialidad }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha</label>
+                            <input type="date" name="fecha" class="form-control" required id="fechaInput">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Hora</label>
+                            <input type="time" name="hora" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Motivo de la Consulta</label>
+                        <textarea name="motivo_consulta" class="form-control" rows="3" required
+                            placeholder="Describe brevemente tus síntomas o razón de la visita"></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a href="{{ url_for('citas.index') }}" class="btn btn-secondary me-md-2">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Confirmar Solicitud</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set min date to today using JS to avoid Jinja complexity
+    document.addEventListener('DOMContentLoaded', function () {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('fechaInput').setAttribute('min', today);
+    });
+</script>
+{% endblock %}

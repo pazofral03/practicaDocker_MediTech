@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row align-items-center mb-4">
+        <div class="col-8">
+            <h2 class="fw-bold text-warning">🏖️ Gestión de Ausencias</h2>
+            <p class="text-muted">Registra tus días libres, vacaciones o bajas médicas para bloquear citas.</p>
+        </div>
+        <div class="col-4 text-end">
+            <a href="{{ url_for('citas.medico_agenda') }}" class="btn btn-outline-primary">📅 Volver a la Agenda</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Formulario -->
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0 fw-bold">Nueva Ausencia</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Fecha Inicio</label>
+                            <input type="date" name="fecha_inicio" class="form-control" required
+                                min="{{ get_today_date }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fecha Fin</label>
+                            <input type="date" name="fecha_fin" class="form-control" required
+                                min="{{ get_today_date }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Motivo</label>
+                            <textarea name="motivo" class="form-control" rows="3"
+                                placeholder="Vacaciones, Asuntos Propios, Baja Médica..." required></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-warning">💾 Registrar Bloqueo</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Listado -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Historial de Ausencias</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Desde</th>
+                                    <th>Hasta</th>
+                                    <th>Motivo</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ausencia in ausencias %}
+                                <tr>
+                                    <td>{{ ausencia.fecha_inicio.strftime('%d/%m/%Y') }}</td>
+                                    <td>{{ ausencia.fecha_fin.strftime('%d/%m/%Y') }}</td>
+                                    <td>{{ ausencia.motivo }}</td>
+                                    <td>
+                                        <form action="{{ url_for('citas.eliminar_ausencia', id=ausencia.id) }}"
+                                            method="POST" onsubmit="return confirm('¿Eliminar registro de ausencia?');">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">🗑️
+                                                Borrar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">
+                                        No hay ausencias registradas.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
