@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="text-center mb-5">
+                <span class="badge bg-primary mb-2 text-uppercase">{{ current_user.rol }}</span>
+                <h1 class="display-5 fw-bold text-dark">Panel de Control</h1>
+                <p class="lead text-muted">Bienvenido, {{ current_user.nombre_completo }}</p>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+
+                {# --- ADMINISTRADOR --- #}
+                {% if current_user.rol == 'admin' %}
+                <div class="col-md-6 col-lg-5">
+                    <div class="card h-100 border-0 shadow-sm hover-lift transition-all">
+                        <div class="card-body text-center p-5">
+                            <div class="display-4 text-primary mb-3">👥</div>
+                            <h3 class="h4 card-title fw-bold">Administrar Usuarios</h3>
+                            <p class="card-text text-muted mb-4">Gestión de altas, bajas y modificación de cuentas de
+                                personal y pacientes.</p>
+                            <a href="{{ url_for('usuarios.index') }}"
+                                class="btn btn-primary w-100 btn-lg rounded-pill">Acceder</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-5">
+                    <div class="card h-100 border-0 shadow-sm hover-lift transition-all">
+                        <div class="card-body text-center p-5">
+                            <div class="display-4 text-success mb-3">📅</div>
+                            <h3 class="h4 card-title fw-bold">Administrar Citas</h3>
+                            <p class="card-text text-muted mb-4">Supervisión general de la agenda y gestión de citas de
+                                todos los usuarios.</p>
+                            <a href="{{ url_for('citas.index') }}"
+                                class="btn btn-success w-100 btn-lg rounded-pill">Acceder</a>
+                        </div>
+                    </div>
+                </div>
+
+                {# --- MÉDICO --- #}
+                {% elif current_user.rol == 'medico' %}
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                        <div class="card-body text-center p-4">
+                            <div class="h1 text-info mb-3">👨‍⚕️</div>
+                            <h5 class="card-title fw-bold">Ver Agenda</h5>
+                            <p class="card-text text-muted small">Consulta tus citas programadas para hoy y próximos
+                                días.</p>
+                            <a href="{{ url_for('citas.medico_agenda') }}"
+                                class="btn btn-outline-info w-100 stretched-link">Ir
+                                a Agenda</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Funcionalidad simulada para Ausencia (Alerta JS) -->
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                        <div class="card-body text-center p-4">
+                            <div class="h1 text-warning mb-3">🏖️</div>
+                            <h5 class="card-title fw-bold">Registrar Ausencia</h5>
+                            <p class="card-text text-muted small">Gestiona tus días libres y vacaciones.</p>
+                            <a href="{{ url_for('citas.medico_ausencias') }}"
+                                class="btn btn-outline-warning w-100 stretched-link">Gestionar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                        <div class="card-body text-center p-4">
+                            <div class="h1 text-primary mb-3">📝</div>
+                            <h5 class="card-title fw-bold">Actualizar Diagnóstico</h5>
+                            <p class="card-text text-muted small">Accede a las citas para completar informes médicos.
+                            </p>
+                            <a href="{{ url_for('citas.index') }}"
+                                class="btn btn-outline-primary w-100 stretched-link">Acceder</a>
+                        </div>
+                    </div>
+                </div>
+
+                {# --- PACIENTE --- #}
+                {% elif current_user.rol == 'paciente' %}
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                        <div class="card-body text-center p-5">
+                            <div class="display-4 text-primary mb-3">🗓️</div>
+                            <h3 class="h4 card-title fw-bold">Administrar Cita</h3>
+                            <p class="card-text text-muted mb-4">Solicita una nueva cita, modifica horarios o cancela
+                                visitas existentes.</p>
+                            <a href="{{ url_for('citas.index') }}"
+                                class="btn btn-primary w-100 btn-lg rounded-pill">Gestionar Citas</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                        <div class="card-body text-center p-5">
+                            <div class="display-4 text-secondary mb-3">📂</div>
+                            <h3 class="h4 card-title fw-bold">Historial Médico</h3>
+                            <p class="card-text text-muted mb-4">Consulta el detalle y resultados de tus visitas
+                                anteriores.</p>
+                            <a href="{{ url_for('citas.index') }}"
+                                class="btn btn-secondary w-100 btn-lg rounded-pill">Ver Historial</a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+    }
+</style>
+{% endblock %}
