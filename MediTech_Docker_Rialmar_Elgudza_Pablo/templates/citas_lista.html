@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-5 mt-4 align-items-center">
+    <div class="col-md-8">
+        <h2 class="fw-bold text-primary mb-2"><i class="fa-solid fa-calendar-check me-2"></i> Gestión de Citas</h2>
+        <p class="text-muted mb-0">
+            {% if current_user.rol == 'medico' %}
+            Tu agenda de pacientes.
+            {% elif current_user.rol == 'paciente' %}
+            Tu historial de citas y próximas consultas.
+            {% else %}
+            Administración de todas las citas del sistema.
+            {% endif %}
+        </p>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        {% if current_user.rol != 'medico' %}
+        <a href="{{ url_for('citas.solicitar') }}" class="btn btn-primary shadow-lg btn-lg rounded-pill">
+            <i class="fa-solid fa-plus me-2"></i> Solicitar Cita
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="row mb-4">
+    <div class="col-12">
+        {% for category, message in messages %}
+        {% set alert_class = 'danger' if category == 'error' else category %}
+        <div class="alert alert-{{ alert_class }} alert-dismissible fade show d-flex align-items-center" role="alert">
+            <i class="fa-solid fa-circle-info me-2"></i>
+            <div>{{ message }}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="card shadow-lg border-0 overflow-hidden">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="py-3 ps-4">Fecha/Hora</th>
+                        {% if current_user.rol != 'paciente' %}<th>Paciente</th>{% endif %}
+                        {% if current_user.rol != 'medico' %}<th>Médico</th>{% endif %}
+                        <th>Motivo</th>
+                        <th>Estado</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cita in citas %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold text-dark">{{ cita.fecha_hora.strftime('%d/%m/%Y') }}</div>
+                            <div class="small text-muted"><i class="fa-regular fa-clock me-1"></i>{{
+                                cita.fecha_hora.strftime('%H:%M') }}</div>
+                        </td>
+                        {% if current_user.rol != 'paciente' %}
+                        <td>
+                            <div class="fw-medium">{{ cita.paciente.nombre_completo }}</div>
+                            <div class="small text-muted">{{ cita.paciente.email }}</div>
+                        </td>
+                        {% endif %}
+                        {% if current_user.rol != 'medico' %}
+                        <td>
+                            <div class="fw-medium">{{ cita.medico.nombre_completo }}</div>
+                            <div class="small text-muted">{{ cita.medico.especialidad }}</div>
+                        </td>
+                        {% endif %}
+                        <td>{{ cita.motivo_consulta }}</td>
+                        <td>
+                            {% if cita.estado == 'Pendiente' %}
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2"><i
+                                    class="fa-solid fa-hourglass-start me-1"></i> Pendiente</span>
+                            {% elif cita.estado == 'Confirmada' %}
+                            <span class="badge bg-info text-white rounded-pill px-3 py-2"><i
+                                    class="fa-solid fa-check me-1"></i> Confirmada</span>
+                            {% elif cita.estado == 'Completada' %}
+                            <span class="badge bg-success rounded-pill px-3 py-2"><i
+                                    class="fa-solid fa-check-double me-1"></i> Completada</span>
+                            {% else %}
+                            <span class="badge bg-danger rounded-pill px-3 py-2"><i class="fa-solid fa-xmark me-1"></i>
+                                Cancelada</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group">
+                                <a href="{{ url_for('citas.gestionar', id=cita.id) }}"
+                                    class="btn btn-sm btn-outline-primary" title="Ver/Gestionar">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                {% if current_user.rol == 'admin' %}
+                                <form action="{{ url_for('citas.eliminar', id=cita.id) }}" method="POST"
+                                    class="d-inline" onsubmit="return confirm('¿Borrar cita permanentemente?');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger ms-1" title="Eliminar"><i
+                                            class="fa-solid fa-trash"></i></button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <div class="text-muted opacity-50 mb-3">
+                                <i class="fa-regular fa-calendar-xmark fa-4x"></i>
+                            </div>
+                            <h5 class="text-muted fw-bold">No tienes citas registradas</h5>
+                            <p class="small text-muted">Solicita una nueva cita para comenzar.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

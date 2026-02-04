@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  meditech-app:
+    build: .
+    container_name: meditech_python
+    ports:
+      - "5001:5000"
+    env_file:
+      - .env
+    volumes:
+      - ./instance:/app/instance

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center py-5">
+    <div class="col-lg-6 mb-5 mb-lg-0">
+        <span class="badge bg-light text-primary border border-primary px-3 py-2 rounded-pill mb-3 fw-bold">🚀 Gestión
+            Hospitalaria 2.0</span>
+        <h1 class="display-3 fw-bold mb-3" style="letter-spacing: -1px; line-height: 1.1;">
+            Tu Salud, <br> <span class="text-primary">Nuestra Prioridad.</span>
+        </h1>
+        <p class="lead text-muted mb-4 opacity-75">
+            Bienvenido a <strong>MediTech</strong>. La plataforma integral para la gestión de citas,
+            historiales médicos y comunicación directa entre profesionales y pacientes. Simplificamos la salud.
+        </p>
+        <div class="d-flex gap-3">
+            <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg shadow-lg px-4">Empezar Ahora</a>
+            <a href="#features" class="btn btn-outline-secondary btn-lg px-4">Saber Más</a>
+        </div>
+    </div>
+
+    <div class="col-lg-5 offset-lg-1">
+        <div class="row g-4">
+            <div class="col-6">
+                <div class="card h-100 border-0 shadow-sm p-3 text-center hover-up">
+                    <div class="card-body">
+                        <div class="mb-3 text-primary">
+                            <i class="fa-solid fa-calendar-check fa-3x"></i>
+                        </div>
+                        <h5 class="fw-bold">Citas Online</h5>
+                        <p class="small text-muted mb-0">Reserva tu cita en segundos.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 mt-5">
+                <div class="card h-100 border-0 shadow-sm p-3 text-center hover-up text-bg-primary">
+                    <div class="card-body">
+                        <div class="mb-3 text-white">
+                            <i class="fa-solid fa-user-doctor fa-3x"></i>
+                        </div>
+                        <h5 class="fw-bold">Especialistas</h5>
+                        <p class="small text-white-50 mb-0">Los mejores médicos a tu alcance.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 mt-n5">
+                <div class="card h-100 border-0 shadow-sm p-3 text-center hover-up">
+                    <div class="card-body">
+                        <div class="mb-3 text-success">
+                            <i class="fa-solid fa-notes-medical fa-3x"></i>
+                        </div>
+                        <h5 class="fw-bold">Historial</h5>
+                        <p class="small text-muted mb-0">Tus datos seguros y accesibles.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card h-100 border-0 shadow-sm p-3 text-center hover-up">
+                    <div class="card-body">
+                        <div class="mb-3 text-info">
+                            <i class="fa-solid fa-comments fa-3x"></i>
+                        </div>
+                        <h5 class="fw-bold">Soporte</h5>
+                        <p class="small text-muted mb-0">Estamos aquí para ayudarte.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row py-5 mt-5" id="features">
+    <div class="col-12 text-center mb-5">
+        <h3 class="fw-bold">¿Por qué elegir MediTech?</h3>
+        <p class="text-muted">Cuidamos cada detalle de tu experiencia médica.</p>
+    </div>
+    <div class="col-12 mb-5">
+        <div class="card border-0 shadow-lg overflow-hidden text-center">
+            <img src="{{ url_for('static', filename='images/hospital.png') }}" class="img-fluid w-100 hospital-img"
+                alt="Instalaciones MediTech">
+            <div class="card-body bg-dark text-white p-4">
+                <h4 class="fw-bold">Instalaciones de Vanguardia</h4>
+                <p class="mb-0 text-white-50">Contamos con la mejor tecnología para tu cuidado.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hospital-img {
+        height: auto;
+        max-height: 400px;
+        /* Altura inicial recortada */
+        object-fit: cover;
+        object-position: center;
+        transition: max-height 1s ease-in-out;
+        /* Animación suave */
+        cursor: pointer;
+    }
+
+    .hospital-img:hover {
+        max-height: 3000px;
+        /* Valor alto para permitir que se muestre completa */
+    }
+</style>
+{% endblock %}

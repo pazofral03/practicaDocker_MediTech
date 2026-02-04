@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-9">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">📋 Gestión de Cita #{{ cita.id }}</h4>
+                <span class="badge 
+                    {% if cita.estado == 'Pendiente' %}bg-warning text-dark
+                    {% elif cita.estado == 'Confirmada' %}bg-info
+                    {% elif cita.estado == 'Completada' %}bg-success
+                    {% else %}bg-danger{% endif %}">
+                    {{ cita.estado }}
+                </span>
+            </div>
+            <div class="card-body p-4">
+
+                <div class="row mb-4">
+                    <div class="col-md-6 border-end">
+                        <h6 class="text-uppercase text-muted small fw-bold">Detalles de la Cita</h6>
+                        <p class="mb-1"><strong>Fecha:</strong> {{ cita.fecha_hora.strftime('%d/%m/%Y a las %H:%M') }}
+                        </p>
+                        <p class="mb-1"><strong>Motivo:</strong> {{ cita.motivo_consulta }}</p>
+                    </div>
+                    <div class="col-md-6 ps-md-4">
+                        <h6 class="text-uppercase text-muted small fw-bold">Participantes</h6>
+                        <p class="mb-1"><strong>Médico:</strong> {{ cita.medico.nombre_completo }} <small
+                                class="text-muted">({{ cita.medico.especialidad }})</small></p>
+                        <p class="mb-1"><strong>Paciente:</strong> {{ cita.paciente.nombre_completo }}</p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <form method="POST">
+
+                    {% if current_user.rol in ['medico', 'admin'] %}
+                    <div class="row mb-3 pb-3 border-bottom">
+                        <div class="col-md-12">
+                            <h6 class="text-primary fw-bold mb-3">📅 Reprogramar Cita</h6>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Fecha</label>
+                            <input type="date" name="fecha" class="form-control" required
+                                value="{{ cita.fecha_hora.strftime('%Y-%m-%d') }}" min="{{ now_date }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Hora</label>
+                            <input type="time" name="hora" class="form-control" required
+                                value="{{ cita.fecha_hora.strftime('%H:%M') }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Diagnóstico</label>
+                        <textarea name="diagnostico" class="form-control" rows="4"
+                            placeholder="Escribe el diagnóstico médico aquí...">{{ cita.diagnostico or '' }}</textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tratamiento / Receta</label>
+                        <textarea name="tratamiento" class="form-control" rows="4"
+                            placeholder="Indicaciones y medicamentos...">{{ cita.tratamiento or '' }}</textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Cambiar Estado</label>
+                        <select name="estado" class="form-select w-auto">
+                            <option value="Pendiente" {% if cita.estado=='Pendiente' %}selected{% endif %}>Pendiente
+                            </option>
+                            <option value="Confirmada" {% if cita.estado=='Confirmada' %}selected{% endif %}>Confirmada
+                            </option>
+                            <option value="Completada" {% if cita.estado=='Completada' %}selected{% endif %}>Completada
+                            </option>
+                            <option value="Cancelada" {% if cita.estado=='Cancelada' %}selected{% endif %}>Cancelada
+                            </option>
+                        </select>
+                    </div>
+                    {% else %}
+                    <!-- Vista de Paciente (Solo lectura salvo cancelación) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-primary">Diagnóstico</label>
+                        <div class="p-3 bg-light rounded border">
+                            {{ cita.diagnostico or 'Pendiente de valoración' }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-primary">Tratamiento</label>
+                        <div class="p-3 bg-light rounded border">
+                            {{ cita.tratamiento or 'Pendiente de asignación' }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+                        <a href="{{ url_for('citas.index') }}" class="btn btn-secondary">Volver al listado</a>
+
+                        {% if current_user.rol in ['medico', 'admin'] %}
+                        <button type="submit" class="btn btn-primary">💾 Guardar Cambios</button>
+                        {% endif %}
+
+                        {% if current_user.rol == 'paciente' and cita.estado not in ['Completada', 'Cancelada'] %}
+                        <button type="submit" name="accion" value="cancelar" class="btn btn-outline-danger"
+                            onclick="return confirm('¿Seguro que quieres cancelar esta cita?')">
+                            ❌ Cancelar Cita
+                        </button>
+                        {% endif %}
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
